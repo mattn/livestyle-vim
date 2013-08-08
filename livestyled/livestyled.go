@@ -16,9 +16,11 @@ func main() {
 		if r.Method == "POST" {
 			b, err := ioutil.ReadAll(r.Body)
 			r.Body.Close()
-			if err == nil {
-				c <- string(b)
+			if err != nil {
+				fmt.Fprint(w, "NG")
+				return
 			}
+			c <- string(b)
 		}
 		fmt.Fprint(w, "OK")
 	})
