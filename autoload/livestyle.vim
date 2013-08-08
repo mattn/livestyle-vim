@@ -3,7 +3,7 @@ if !exists('s:bufcache')
 endif
 
 let s:url = get(g:, 'livestyle_server_url', 'http://127.0.0.1:54000/')
-let s:server = expand('<sfile>:h:h') . '/livestyled/livestyled'
+let s:server = expand('<sfile>:p:h:h') . '/livestyled/livestyled'
 
 if has('python')
   let s:use_python = 1
