@@ -2,6 +2,33 @@
 
 ![](https://gist.github.com/mattn/6183553/raw/3f568d6273584bef13442bf1c55a8db31d0b8408/livestyle-vim.gif)
 
+## Install
+
+1. Install golang
+
+http://golang.org/doc/install
+
+```
+$ cd /path/to/livestyle-vim
+$ go build livestyled.go
+```
+
+2. Install Chrome Extension
+
+https://chrome.google.com/webstore/detail/emmet-livestyle/diebikgmpmeppiilkaijjbdgciafajmg
+
+## Usage
+
+Open local file with chrome. 
+
+```
+:LiveStyle
+```
+
+```
+e /path/to/style.css
+```
+
 ## Project Authors
 
 [Yasuhiro Matsumoto](http://mattn.kaoriya.net/)
