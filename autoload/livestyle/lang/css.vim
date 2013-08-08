@@ -32,14 +32,14 @@ function! livestyle#lang#css#diff(css1, css2)
   let ks = keys(css1)
   for k in ks
     if !has_key(css2, k)
-      call add(patch[0], {"action": "remove", "path":[split(k, ',\s*')]})
+      call add(patch[0], {"action": "remove", "path":map(split(k, ',\s*'), '[v:val, 1]')})
       call remove(css1, k)
     endif
   endfor
   for k in keys(css2)
     let removed = []
     if !has_key(css1, k)
-      call add(patch[0], {"action": "update", "path":[split(k, ',\s*')], "properties": css2[k]})
+      call add(patch[0], {"action": "add", "path":map(split(k, ',\s*'), '[v:val, 1]'), "properties": css2[k]})
       continue
     endif
     for p1 in css1[k]
@@ -55,7 +55,7 @@ function! livestyle#lang#css#diff(css1, css2)
       endif
     endfor
     if len(removed) > 0
-      call add(patch[0], {"action": "update", "path":[split(k, ',\s*')], "removed": removed})
+      call add(patch[0], {"action": "update", "path":map(split(k, ',\s*'), '[v:val, 1]'), "removed": removed})
     endif
     let properties = []
     for p2 in css2[k]
@@ -73,7 +73,7 @@ function! livestyle#lang#css#diff(css1, css2)
       endif
     endfor
     if len(properties) > 0
-      call add(patch[1], {"action": "update", "path":[split(k, ',\s*')], "properties": properties})
+      call add(patch[1], {"action": "update", "path":map(split(k, ',\s*'), '[v:val, 1]'), "properties": properties})
     endif
   endfor
   return patch
