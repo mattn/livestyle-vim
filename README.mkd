@@ -5,17 +5,16 @@
 ## Install
 
 1. Install golang
-
-http://golang.org/doc/install
-
-```
-$ cd /path/to/livestyle-vim
-$ go build livestyled.go
-```
-
+  
+  http://golang.org/doc/install
+  
+  ```
+  $ cd /path/to/livestyle-vim
+  $ go build livestyled.go
+  ```
+  
 2. Install Chrome Extension
-
-https://chrome.google.com/webstore/detail/emmet-livestyle/diebikgmpmeppiilkaijjbdgciafajmg
+  Install from [here](https://chrome.google.com/webstore/detail/emmet-livestyle/diebikgmpmeppiilkaijjbdgciafajmg)
 
 ## Usage
 
