@@ -3,6 +3,7 @@ if !exists('s:bufcache')
 endif
 
 let s:url = "http://127.0.0.1:54000/"
+let s:server = expand('<sfile>:h:h') . '/server/livestyled'
 
 function! s:updateFiles()
   let files = map(range(1, bufnr('$')), 'fnamemodify(bufname(v:val), ":p")')
@@ -39,7 +40,20 @@ function! s:patch()
   endfor
 endfunction
 
+function! s:leave()
+  try
+    call webapi#http#get(s:url . 'shutdown')
+  catch
+  endtry
+endfunction
+
 function! livestyle#setup()
+  if has('win32') || has('win64')
+    silent exe '!start /min '.shellescape(s:server)
+  else
+    silent exe '!'.shellescape(s:server).' > /dev/null 2>&1 > /dev/null &'
+  endif
+  sleep 2
   let files = map(range(1, bufnr('$')), 'fnamemodify(bufname(v:val), ":p")')
   let vimapp = printf('Vim%d.%d', v:version / 100, v:version % 100)
   call webapi#http#post(s:url, webapi#json#encode({
@@ -59,6 +73,7 @@ function! livestyle#setup()
     autocmd CursorMovedI * silent! call s:patch()
     autocmd InsertLeave * silent! call s:patch()
     autocmd BufEnter * silent! call s:updateFiles()
+    autocmd VimLeavePre * call s:leave()
   augroup END
   set updatetime=100
 endfunction

@@ -6,6 +6,7 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+	"os"
 )
 
 func main() {
@@ -20,6 +21,9 @@ func main() {
 			}
 		}
 		fmt.Fprint(w, "OK")
+	})
+	http.HandleFunc("/shutdown", func (w http.ResponseWriter, r *http.Request) {
+		os.Exit(0)
 	})
 	http.Handle("/browser", websocket.Handler(func(ws *websocket.Conn) {
 		go func() {
