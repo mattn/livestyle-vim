@@ -50,13 +50,15 @@ function! s:leave()
   endtry
 endfunction
 
-function! livestyle#setup()
-  if has('win32') || has('win64')
-    silent exe '!start /min '.shellescape(s:server)
-  else
-    silent exe '!'.shellescape(s:server).' > /dev/null 2>&1 > /dev/null &'
+function! livestyle#setup(...)
+  if get(a:000, 0) != '!'
+    if has('win32') || has('win64')
+      silent exe '!start /min '.shellescape(s:server)
+    else
+      silent exe '!'.shellescape(s:server).' > /dev/null 2>&1 > /dev/null &'
+    endif
+    sleep 2
   endif
-  sleep 2
   let files = map(range(1, bufnr('$')), 'fnamemodify(bufname(v:val), ":p")')
   let vimapp = printf('Vim%d.%d', v:version / 100, v:version % 100)
   call webapi#http#post(s:url, webapi#json#encode({
