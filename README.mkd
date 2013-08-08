@@ -19,15 +19,19 @@
 
 ## Usage
 
-Open local file with chrome. 
+1. Open local file with chrome. 
 
-```
-:LiveStyle
-```
+2. Start LiveStyle server
 
-```
-:e /path/to/style.css
-```
+  ```
+  :LiveStyle
+  ```
+
+3. Open the file
+
+  ```
+  :e /path/to/style.css
+  ```
 
 ## Project Authors
 
