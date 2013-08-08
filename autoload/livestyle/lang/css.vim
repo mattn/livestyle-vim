@@ -9,7 +9,7 @@ function! livestyle#lang#css#parse(buf)
     if len(t) != 2
       continue
     endif
-    let k = substitute(t[0], '\s\+', '', 'g')
+    let k = substitute(t[0], '[ \t\r\n]\+', '', 'g')
     for p in split(t[1], ';')
       let pp = split(p, '^[^:]\+\zs:\ze.*')
       if len(pp) == 2
