@@ -31,7 +31,7 @@ func main() {
 				var r string
 				err := websocket.Message.Receive(ws, &r)
 				if err != nil {
-					log.Println(err)
+					break
 				} else {
 					log.Println(r)
 				}
