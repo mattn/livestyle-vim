@@ -8,7 +8,7 @@ let s:server = expand('<sfile>:p:h:h') . '/livestyled/livestyled'
 if has('python')
   let s:use_python = 1
 python <<EOF
-import urllib, vim
+import urllib, json, vim
 EOF
 else
   let s:use_python = 0
