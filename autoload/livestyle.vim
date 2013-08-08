@@ -30,6 +30,9 @@ function! s:patch()
   endif
   let s:bufcache[f] = {'tick': b:changedtick, 'data': cur}
   for p in patch
+    if len(p) == 0
+      continue
+    endif
     call webapi#http#post(s:url, webapi#json#encode({
     \  "action": "update",
     \  "data": {
