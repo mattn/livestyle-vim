@@ -1,6 +1,6 @@
 # LiveStyle for Vim
 
-See the [movie](https://dl-web.dropbox.com/get/Public/livestyle.gif?w=AAAFE4XzJmZdAmoOIqmjMbc7g0S8N6T82UK-wz5hcE8Oyw)
+![](https://dl-web.dropbox.com/get/Public/livestyle-vim.gif?w=AABVvf2Xi3DG0QcUh0lRdrGopF6GxO0bgl4ldhSYFxYlAQ)
 
 ## Project Authors
 
