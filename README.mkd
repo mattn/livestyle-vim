@@ -33,6 +33,13 @@
   :e /path/to/style.css
   ```
 
+## Notice
+
+If you don't get update of content even though modify css on vim, probably socket connection is not recognized by your http browser.
+Type `<F12>` to open developer tools, and click `LiveStyle` tab, check that you can see Vim icon, and path is selected in the combo-box. 
+
+![](http://go-gyazo.appspot.com/a665649e66de6dd9.png)
+
 ## Project Authors
 
 [Yasuhiro Matsumoto](http://mattn.kaoriya.net/)
