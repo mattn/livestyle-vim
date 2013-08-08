@@ -26,7 +26,7 @@ Open local file with chrome.
 ```
 
 ```
-e /path/to/style.css
+:e /path/to/style.css
 ```
 
 ## Project Authors
