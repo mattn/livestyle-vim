@@ -1,3 +1,8 @@
 # LiveStyle for Vim
 
 See the [movie](https://dl-web.dropbox.com/get/Public/livestyle.gif?w=AAAFE4XzJmZdAmoOIqmjMbc7g0S8N6T82UK-wz5hcE8Oyw)
+
+## Project Authors
+
+[Yasuhiro Matsumoto](http://mattn.kaoriya.net/)
+
