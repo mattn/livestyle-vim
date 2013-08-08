@@ -5,12 +5,41 @@ endif
 let s:url = "http://127.0.0.1:54000/"
 let s:server = expand('<sfile>:h:h') . '/server/livestyled'
 
+if has('python')
+  let s:use_python = 1
+python <<EOF
+import urllib, vim
+EOF
+else
+  let s:use_python = 0
+endif
+
 function! s:updateFiles()
   let files = map(range(1, bufnr('$')), 'fnamemodify(bufname(v:val), ":p")')
-  call webapi#http#post(s:url, webapi#json#encode({
+  call s:do_post(s:url, {
   \  "action": "updateFiles",
   \  "data": files,
-  \}))
+  \})
+endfunction
+
+function! s:do_get(url)
+  if s:use_python
+python <<EOF
+urllib.urlopen(vim.eval('a:url').read()
+EOF
+  else
+    call webapi#http#get(a:url)
+  endif
+endfunction
+
+function! s:do_post(url, params)
+  if s:use_python
+python <<EOF
+urllib.urlopen(vim.eval('a:url'), json.dumps(vim.eval('a:params'))).read()
+EOF
+  else
+    call webapi#http#post(a:url, webapi#json#encode(a:params))
+  endif
 endfunction
 
 function! s:patch()
@@ -33,19 +62,19 @@ function! s:patch()
     if len(p) == 0
       continue
     endif
-    call webapi#http#post(s:url, webapi#json#encode({
+    call s:do_post(s:url, {
     \  "action": "update",
     \  "data": {
     \    "editorFile": f,
     \    "patch": p,
     \  }
-    \}))
+    \})
   endfor
 endfunction
 
 function! s:leave()
   try
-    call webapi#http#get(s:url . 'shutdown')
+    call s:do_get(s:url . 'shutdown')
   catch
   endtry
 endfunction
@@ -61,7 +90,7 @@ function! livestyle#setup(...)
   endif
   let files = map(range(1, bufnr('$')), 'fnamemodify(bufname(v:val), ":p")')
   let vimapp = printf('Vim%d.%d', v:version / 100, v:version % 100)
-  call webapi#http#post(s:url, webapi#json#encode({
+  call s:do_post(s:url, webapi#json#encode({
   \  "action": "id",
   \  "data": {
   \    "id": vimapp,
