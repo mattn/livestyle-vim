@@ -8,7 +8,8 @@
 
 ## Install
 
-1. Install golang
+1. Build server
+  Install golang and build.
   
   http://golang.org/doc/install
   

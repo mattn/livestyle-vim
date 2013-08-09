@@ -60,7 +60,9 @@ Sublime Text, more browsers and editors will be available later.
 ==============================================================================
 INSTALL                                                      *livestyle-install*
 
-1. Install golang
+1. Build server
+  Install golang and build.
+
   http://golang.org/doc/install
 >
   $ cd /path/to/livestyle-vim/livestyled
