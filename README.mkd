@@ -46,6 +46,11 @@ Type `<F12>` to open developer tools, and click `LiveStyle` tab, check that you 
 
 ![](http://go-gyazo.appspot.com/a665649e66de6dd9.png)
 
+## TODO
+
+* Strict properties replacement
+* Strict properties addition
+
 ## Project Authors
 
 [Yasuhiro Matsumoto](http://mattn.kaoriya.net/)
