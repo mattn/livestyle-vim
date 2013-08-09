@@ -97,6 +97,7 @@ endfunction
 
 function! livestyle#reply(reply)
   try
+    let pos = getpos('.')
     let res = webapi#json#decode(a:reply)
     if type(res) != 4 || !has_key(res, 'action') || res['action'] != 'update'
       return ''
@@ -118,6 +119,7 @@ function! livestyle#reply(reply)
   catch
     echohl Error | echomsg v:exception "\n" . v:throwpoint | echohl None
   finally
+    call setpos('.', pos)
     redraw
   endtry
   return ''
