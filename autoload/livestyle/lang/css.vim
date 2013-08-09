@@ -30,14 +30,27 @@ function! livestyle#lang#css#apply(patch)
   let patch = a:patch
   for p in patch
     if p['action'] == 'update'
-      for path in p['path']
-        for prop in p['properties']
-          let ex = '^\(.*\%(^\|\n\|}\)'.path[0].'\_\s{\_.*\<'.prop['name'].'\>\_\s*:\_\s*\)\(\_[^;]*\)\(\_.*\)$'
-          let text = substitute(join(getline(1, '$'), "\n"), ex, '\1'.prop['value'].'\3', '')
-          silent %d _
-          call setline(1, split(text, "\n"))
-	    endfor
+      let pathex = join(map(copy(p['path']), 'v:val[0]'), '\\_\\s*,\\_\\s*')
+      for prop in p['properties']
+        let propex = '^\(\_.*\%(^\|\n\|}\)'.pathex.'\_\s{\_.*\<'.prop['name'].'\>\_\s*:\_\s*\)\(\_[^;]*\)\(\_.*\)$'
+        let text = substitute(join(getline(1, '$'), "\n"), propex, '\1'.prop['value'].'\3', '')
+        silent %d _
+        call setline(1, split(text, "\n"))
       endfor
+    elseif p['action'] == 'add'
+      let text = join(getline(1, '$'), "\n")
+      let text .= join(map(copy(p['path']), 'v:val[0]'), ', ') . " {\n"
+      for prop in p['properties']
+        let text .= '  ' . prop['name'] . ': ' . prop['value'] . ";\n"
+      endfor
+      let text .= "}\n"
+      call setline(1, split(text, "\n"))
+    elseif p['action'] == 'remove'
+      let pathex = join(map(copy(p['path']), 'v:val[0]'), '\\_\\s*,\\_\\s*')
+      let ex = '^\(\_.*\%(^\|\n\|}\)\)'.pathex.'\_\s{[^}]\{-}}\(\_.*\)'
+      let text = substitute(join(getline(1, '$'), "\n"), ex, '\1\2', '')
+      silent %d _
+      call setline(1, split(text, "\n"))
     endif
   endfor
 endfunction

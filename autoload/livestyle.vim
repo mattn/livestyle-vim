@@ -116,7 +116,7 @@ function! livestyle#reply(reply)
       exe curwin.'wincmd w'
     endtry
   catch
-    echohl Error | echomsg v:exception | echohl None
+    echohl Error | echomsg v:exception "\n" . v:throwpoint | echohl None
   finally
     redraw
   endtry
