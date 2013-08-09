@@ -2,6 +2,7 @@ package main
 
 import (
 	"code.google.com/p/go.net/websocket"
+	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"log"
@@ -31,8 +32,14 @@ func main() {
 	})
 	http.HandleFunc("/vim", func (w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "text/plain")
-		name = r.FormValue("name")
-		path = r.FormValue("path")
+		var v map[string]string
+		err := json.NewDecoder(r.Body).Decode(&v)
+		if err != nil {
+			log.Print(err)
+			return
+		}
+		name, _ = v["name"]
+		path, _ = v["path"]
 		fmt.Fprint(w, "OK")
 	})
 	http.Handle("/browser", websocket.Handler(func(ws *websocket.Conn) {
@@ -42,10 +49,11 @@ func main() {
 				err := websocket.Message.Receive(ws, &r)
 				if err != nil {
 					break
-				} else if name != "" && path != "" {
+				}
+				log.Println(r)
+				if name != "" && path != "" {
 					cmd := exec.Command(path, "--servername", name, "--remote-expr", fmt.Sprintf("livestyle#reply(%q)", r))
 					cmd.Run()
-					log.Println(r)
 				}
 			}
 		}()

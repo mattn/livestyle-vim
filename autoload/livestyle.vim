@@ -25,6 +25,10 @@ function! s:updateFiles()
   \})
 endfunction
 
+function! s:json_decode(str)
+  return webapi#json#decode(a:str)
+endfunction
+
 function! s:do_get(url)
   if s:use_python
 python <<EOF
@@ -82,6 +86,43 @@ function! s:leave()
   endtry
 endfunction
 
+function! s:find_vim()
+  let e = filter(split($PATH, (has('win32')||has('win64')) ? ';' : ':'), 'executable(v:val . "/" . v:progname)')
+  if len(e) > 0
+    return e[0] . "/" . v:progname
+  else
+    return v:progname
+  endif
+endfunction
+
+function! livestyle#reply(reply)
+  try
+    let res = webapi#json#decode(a:reply)
+    if type(res) != 4 || !has_key(res, 'action') || res['action'] != 'update'
+      return ''
+    endif
+    let f = res['data']['editorFile']
+    let curwin = winnr()
+    try
+      for n in range(1, bufnr('$'))
+        if fnamemodify(bufname(n), ":p") == f
+          exe bufwinnr(n).'wincmd w'
+          let patch = res['data']['patch']
+          call livestyle#lang#{&ft}#apply(patch)
+          break
+        endif
+      endfor
+    finally
+      exe curwin.'wincmd w'
+    endtry
+  catch
+    echohl Error | echomsg v:exception | echohl None
+  finally
+    redraw
+  endtry
+  return ''
+endfunction
+
 function! livestyle#open()
   if has('win32') || has('win64')
     exe printf('!start rundll32 url.dll,FileProtocolHandler %s', shellescape(expand('%:p')))
@@ -96,15 +137,6 @@ function! livestyle#open()
   endif
 endfunction
 
-function! s:find_vim()
-  let e = filter(split($PATH, (has('win32')||has('win64')) ? ';' : ':'), 'executable(v:val . "/" . v:progname)')
-  if len(e) > 0
-    return e[0] . "/" . v:progname
-  else
-    return v:progname
-  endif
-endfunction
-
 function! livestyle#setup(...)
   if get(a:000, 0) != '!'
     if has('win32') || has('win64')
@@ -115,7 +147,7 @@ function! livestyle#setup(...)
     sleep 2
   endif
   let vimapp = printf('Vim%d.%d', v:version / 100, v:version % 100)
-  call s:do_post(s:url . '/vim', {
+  call s:do_post(s:url . 'vim', {
   \  'name': v:servername,
   \  'path': s:find_vim(),
   \})

@@ -26,6 +26,22 @@ function! livestyle#lang#css#parse(buf)
   return ret
 endfunction
 
+function! livestyle#lang#css#apply(patch)
+  let patch = a:patch
+  for p in patch
+    if p['action'] == 'update'
+      for path in p['path']
+        for prop in p['properties']
+          let ex = '^\(.*\%(^\|\n\|}\)'.path[0].'\_\s{\_.*\<'.prop['name'].'\>\_\s*:\_\s*\)\(\_[^;]*\)\(\_.*\)$'
+          let text = substitute(join(getline(1, '$'), "\n"), ex, '\1'.prop['value'].'\3', '')
+          silent %d _
+          call setline(1, split(text, "\n"))
+	    endfor
+      endfor
+    endif
+  endfor
+endfunction
+
 function! livestyle#lang#css#diff(css1, css2)
   let [css1, css2] = [a:css1, a:css2]
   let patch = [[], []]
