@@ -2,6 +2,10 @@
 
 ![](https://gist.github.com/mattn/6183553/raw/3f568d6273584bef13442bf1c55a8db31d0b8408/livestyle-vim.gif)
 
+## Requirements
+
+* Google Chrome on Windows, Linux, MacOSX
+
 ## Install
 
 1. Install golang
