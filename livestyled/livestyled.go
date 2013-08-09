@@ -28,6 +28,7 @@ func main() {
 		fmt.Fprint(w, "OK")
 	})
 	http.HandleFunc("/shutdown", func (w http.ResponseWriter, r *http.Request) {
+		log.Println("shutdown")
 		os.Exit(0)
 	})
 	http.HandleFunc("/vim", func (w http.ResponseWriter, r *http.Request) {
