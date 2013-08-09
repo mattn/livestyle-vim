@@ -15,7 +15,7 @@
   
   ```
   $ cd /path/to/livestyle-vim/livestyled
-  $ go get go get code.google.com/p/go.net/websocket
+  $ go get code.google.com/p/go.net/websocket
   $ go build livestyled.go
   ```
   
