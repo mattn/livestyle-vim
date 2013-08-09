@@ -7,10 +7,12 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"os/exec"
 )
 
 func main() {
 	c := make(chan string, 256)
+	name, path := "", ""
 	http.HandleFunc("/", func (w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "text/plain")
 		if r.Method == "POST" {
@@ -27,6 +29,12 @@ func main() {
 	http.HandleFunc("/shutdown", func (w http.ResponseWriter, r *http.Request) {
 		os.Exit(0)
 	})
+	http.HandleFunc("/vim", func (w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "text/plain")
+		name = r.FormValue("name")
+		path = r.FormValue("path")
+		fmt.Fprint(w, "OK")
+	})
 	http.Handle("/browser", websocket.Handler(func(ws *websocket.Conn) {
 		go func() {
 			for {
@@ -34,7 +42,9 @@ func main() {
 				err := websocket.Message.Receive(ws, &r)
 				if err != nil {
 					break
-				} else {
+				} else if name != "" && path != "" {
+					cmd := exec.Command(path, "--servername", name, "--remote-expr", fmt.Sprintf("livestyle#reply(%q)", r))
+					cmd.Run()
 					log.Println(r)
 				}
 			}
