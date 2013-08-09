@@ -18,7 +18,7 @@ else
 endif
 
 function! s:files()
-  return filter(map(filter(range(1, bufnr('$')), 'buflisted(v:val)'), 'fnamemodify(bufname(v:val), ":p")'), 'filereadable(v:val)')
+  return filter(map(filter(range(1, bufnr('$')), 'buflisted(v:val)'), 'fnamemodify(bufname(v:val), ":p:gs?\\?/?")'), 'filereadable(v:val)')
 endfunction
 
 function! livestyle#updateFiles()
@@ -45,7 +45,7 @@ endfunction
 function! s:do_post(url, params)
   if s:use_python
 python <<EOF
-urllib.urlopen(vim.eval('a:url'), json.dumps(vim.eval('a:params'))).read()
+urllib.urlopen(vim.eval('a:url'), json.dumps(vim.eval('a:params'), encoding=vim.eval('&encoding')).encode('utf-8')).read()
 EOF
   else
     call webapi#http#post(a:url, webapi#json#encode(a:params))
@@ -53,7 +53,7 @@ EOF
 endfunction
 
 function! livestyle#update()
-  let f = fnamemodify(bufname('%'), ':p')
+  let f = fnamemodify(bufname('%'), ':p:gs?\\?/?')
   if !livestyle#lang#exists(&ft)
     return
   endif
@@ -61,7 +61,7 @@ function! livestyle#update()
   if !empty(prev) && prev['tick'] == b:changedtick
     return
   endif
-  let buf = join(getline(1, line('$')), "\n") . "\n"
+  let buf = join(getline(1, '$'), "\n") . "\n"
   let cur = livestyle#lang#{&ft}#parse(buf)
   let patch = []
   if !empty(prev)
@@ -128,6 +128,13 @@ function! livestyle#reply(reply)
   return ''
 endfunction
 
+function! livestyle#clear()
+  let f = fnamemodify(bufname('%'), ':p:gs?\\?/?')
+  if has_key(s:bufcache, f)
+    call remove(s:bufcache, f)
+  endif
+endfunction
+
 function! livestyle#open()
   if has('win32') || has('win64')
     exe printf('!start rundll32 url.dll,FileProtocolHandler %s', shellescape(expand('%:p')))
@@ -178,7 +185,7 @@ function! livestyle#setup(...)
     autocmd CursorMovedI * silent! call livestyle#update()
     autocmd InsertLeave * silent! call livestyle#update()
     autocmd BufEnter * silent! call livestyle#updateFiles()
-    autocmd VimLeavePre * call livestyle#shutdown()
+    autocmd VimLeavePre * silent! call livestyle#shutdown()
   augroup END
   set updatetime=100
 endfunction
