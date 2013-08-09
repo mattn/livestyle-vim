@@ -18,7 +18,7 @@ function! s:files()
   return map(filter(range(1, bufnr('$')), 'buflisted(v:val)'), 'fnamemodify(bufname(v:val), ":p")')
 endfunction
 
-function! s:updateFiles()
+function! livestyle#updateFiles()
   call s:do_post(s:url, {
   \  'action': 'updateFiles',
   \  'data': s:files(),
@@ -49,7 +49,7 @@ EOF
   endif
 endfunction
 
-function! s:patch()
+function! livestyle#update()
   let f = fnamemodify(bufname('%'), ':p')
   if !livestyle#lang#exists(&ft)
     return
@@ -79,9 +79,9 @@ function! s:patch()
   endfor
 endfunction
 
-function! s:leave()
+function! livestyle#shutdown()
   try
-    call s:do_get(s:url . 'shutdown')
+    call s:do_get(s:url . 'shutdown/')
   catch
   endtry
 endfunction
@@ -162,13 +162,13 @@ function! livestyle#setup(...)
   \})
   augroup LiveStyle
     autocmd!
-    autocmd CursorHold * silent! call s:patch()
-    autocmd CursorHoldI * silent! call s:patch()
-    autocmd CursorMoved * silent! call s:patch()
-    autocmd CursorMovedI * silent! call s:patch()
-    autocmd InsertLeave * silent! call s:patch()
-    autocmd BufEnter * silent! call s:updateFiles()
-    autocmd VimLeavePre * call s:leave()
+    autocmd CursorHold * silent! call livestyle#update()
+    autocmd CursorHoldI * silent! call livestyle#update()
+    autocmd CursorMoved * silent! call livestyle#update()
+    autocmd CursorMovedI * silent! call livestyle#update()
+    autocmd InsertLeave * silent! call livestyle#update()
+    autocmd BufEnter * silent! call livestyle#updateFiles()
+    autocmd VimLeavePre * call livestyle#shutdown()
   augroup END
   set updatetime=100
 endfunction
