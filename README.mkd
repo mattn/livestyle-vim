@@ -9,7 +9,8 @@
   http://golang.org/doc/install
   
   ```
-  $ cd /path/to/livestyle-vim
+  $ cd /path/to/livestyle-vim/livestyled
+  $ go get go get code.google.com/p/go.net/websocket
   $ go build livestyled.go
   ```
   
