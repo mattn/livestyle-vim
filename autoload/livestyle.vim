@@ -4,6 +4,9 @@ endif
 
 let s:url = get(g:, 'livestyle_server_url', 'http://127.0.0.1:54000/')
 let s:server = expand('<sfile>:p:h:h') . '/livestyled/livestyled'
+if has('win32') || has('win64')
+  let s:server = substitute(s:server, '/', '\\', 'g') . '.exe'
+endif
 
 if has('python')
   let s:use_python = 1
@@ -142,10 +145,15 @@ endfunction
 function! livestyle#setup(...)
   if get(a:000, 0) != '!'
     if has('win32') || has('win64')
-      silent exe '!start /min '.shellescape(s:server)
+      if has('gui_running')
+        silent exe '!start /min '.shellescape(s:server)
+      else
+        silent exe 'silent ! start /min '.s:server
+      endif
     else
       silent exe '!'.shellescape(s:server).' > /dev/null 2>&1 > /dev/null &'
     endif
+    redraw
     sleep 2
   endif
   let vimapp = printf('Vim%d.%d', v:version / 100, v:version % 100)
