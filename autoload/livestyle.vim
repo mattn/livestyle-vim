@@ -15,7 +15,7 @@ else
 endif
 
 function! s:files()
-  return map(filter(range(1, bufnr('$')), 'buflisted(v:val)'), 'fnamemodify(bufname(v:val), ":p")')
+  return filter(map(filter(range(1, bufnr('$')), 'buflisted(v:val)'), 'fnamemodify(bufname(v:val), ":p")'), 'filereadable(v:val)')
 endfunction
 
 function! livestyle#updateFiles()
