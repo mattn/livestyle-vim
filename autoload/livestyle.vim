@@ -179,13 +179,10 @@ function! livestyle#setup(...)
   \})
   augroup LiveStyle
     autocmd!
-    autocmd CursorHold * silent! call livestyle#update()
-    autocmd CursorHoldI * silent! call livestyle#update()
     autocmd CursorMoved * silent! call livestyle#update()
     autocmd CursorMovedI * silent! call livestyle#update()
     autocmd InsertLeave * silent! call livestyle#update()
     autocmd BufEnter * silent! call livestyle#updateFiles()
     autocmd VimLeavePre * silent! call livestyle#shutdown()
   augroup END
-  set updatetime=100
 endfunction
