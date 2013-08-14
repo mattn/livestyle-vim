@@ -1,7 +1,4 @@
-if !exists('s:bufcache')
-  let s:bufcache = {}
-endif
-
+let s:bufcache = get(s:, 'bufcache', {})
 let s:url = get(g:, 'livestyle_server_url', 'http://127.0.0.1:54000/')
 let s:server = expand('<sfile>:p:h:h') . '/livestyled/livestyled'
 if has('win32') || has('win64')
@@ -23,7 +20,7 @@ endfunction
 
 function! livestyle#updateFiles()
   let files = s:files()
-  if exists('s:lastFiles') && s:lastFiles == files
+  if get(s:, 'lastFiles', []) == files
     return
   endif
   let s:lastFiles = files
