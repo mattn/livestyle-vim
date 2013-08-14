@@ -22,9 +22,14 @@ function! s:files()
 endfunction
 
 function! livestyle#updateFiles()
+  let files = s:files()
+  if exists('s:lastFiles') && s:lastFiles == files
+    return
+  endif
+  let s:lastFiles = files
   call s:do_post(s:url, {
   \  'action': 'updateFiles',
-  \  'data': s:files(),
+  \  'data': files,
   \})
 endfunction
 
