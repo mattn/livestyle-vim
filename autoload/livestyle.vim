@@ -18,7 +18,7 @@ else
 endif
 
 function! s:files()
-  return filter(map(filter(range(1, bufnr('$')), 'buflisted(v:val)'), 'fnamemodify(bufname(v:val), ":p:gs?\\?/?")'), 'filereadable(v:val)')
+  return map(filter(range(1, bufnr('$')), 'buflisted(v:val) && getbufvar(v:val, "&ft")=~"css\\|sass\\|scss"'), 'fnamemodify(bufname(v:val), ":p:gs?\\?/?")')
 endfunction
 
 function! livestyle#updateFiles()
