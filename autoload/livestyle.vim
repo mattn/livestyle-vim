@@ -141,11 +141,11 @@ function! livestyle#open()
   if has('win32') || has('win64')
     exe printf('!start rundll32 url.dll,FileProtocolHandler %s', shellescape(expand('%:p')))
   elseif has('mac') || has('macunix') || has('gui_macvim') || system('uname') =~? '^darwin'
-    exe printf('open %s', shellescape(expand('%:p')))
+    exe printf('!open %s', shellescape(expand('%:p')))
   elseif executable('xdg-open')
-    exe printf('xdg-open %s', shellescape(expand('%:p')))
+    exe printf('!xdg-open %s', shellescape(expand('%:p')))
   elseif executable('firefox')
-    exe printf('firefox %s &', shellescape(expand('%:p')))
+    exe printf('!firefox %s &', shellescape(expand('%:p')))
   else
     echohl Error | echomsg "Can't find your browser" | echohl None
   endif
@@ -164,6 +164,7 @@ function! livestyle#setup(...)
     endif
     redraw
     sleep 2
+    redraw
   endif
   let vimapp = printf('Vim%d.%d', v:version / 100, v:version % 100)
   call s:do_post(s:url . 'vim', {
