@@ -16,7 +16,7 @@ endif
 
 function! s:sanitized_bufname(bufnr)
   let name = bufname(a:bufnr)
-  return name == '' ? name : printf('NoName%03d', a:bufnr)
+  return name != '' ? name : printf('NoName%03d', a:bufnr)
 endfunction
 
 function! s:files()
