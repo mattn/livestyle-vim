@@ -15,9 +15,8 @@ else
 endif
 
 function! s:sanitized_bufname(bufnr)
-  let bufnr = a:bufnr == '%' ? bufnr('%') : a:bufnr
-  let name = bufnr(a:bufnr)
-  return name == '' ? name : printf('NoName%03d', bufnr)
+  let name = bufname(a:bufnr)
+  return name == '' ? name : printf('NoName%03d', a:bufnr)
 endfunction
 
 function! s:files()
