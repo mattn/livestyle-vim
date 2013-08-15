@@ -15,12 +15,13 @@ else
 endif
 
 function! s:sanitized_bufname(bufnr)
+  let bufnr = a:bufnr == '%' ? bufnr('%') : a:bufnr
   let name = bufname(a:bufnr)
-  return name != '' ? name : printf('NoName%03d', a:bufnr)
+  return name != '' ? fnamemodify(name, ":p:gs?\\?/?") : printf('<untitiled: %d>', bufnr)
 endfunction
 
 function! s:files()
-  return map(filter(range(1, bufnr('$')), 'buflisted(v:val) && getbufvar(v:val, "&ft")=~"css\\|sass\\|scss"'), 'fnamemodify(s:sanitized_bufname(v:val), ":p:gs?\\?/?")')
+  return map(filter(range(1, bufnr('$')), 'buflisted(v:val) && getbufvar(v:val, "&ft")=~"css\\|sass\\|scss"'), 's:sanitized_bufname(v:val)')
 endfunction
 
 function! livestyle#updateFiles()
@@ -60,7 +61,7 @@ EOF
 endfunction
 
 function! livestyle#update()
-  let f = fnamemodify(s:sanitized_bufname('%'), ':p:gs?\\?/?')
+  let f = s:sanitized_bufname('%')
   if !livestyle#lang#exists(&ft)
     return
   endif
@@ -116,7 +117,7 @@ function! livestyle#reply(reply)
     let curwin = winnr()
     try
       for n in range(1, bufnr('$'))
-        if fnamemodify(s:sanitized_bufname(n), ":p") == f
+        if s:sanitized_bufname(n) == f
           exe bufwinnr(n).'wincmd w'
           let patch = res['data']['patch']
           call livestyle#lang#{&ft}#apply(patch)
@@ -136,7 +137,7 @@ function! livestyle#reply(reply)
 endfunction
 
 function! livestyle#clear()
-  let f = fnamemodify(s:sanitized_bufname('%'), ':p:gs?\\?/?')
+  let f = s:sanitized_bufname('%')
   if has_key(s:bufcache, f)
     call remove(s:bufcache, f)
   endif
@@ -191,6 +192,7 @@ function! livestyle#setup(...)
     autocmd CursorMovedI * silent! call livestyle#update()
     autocmd InsertLeave * silent! call livestyle#update()
     autocmd BufEnter * silent! call livestyle#updateFiles()
+    autocmd FileType * silent! call livestyle#updateFiles()
     autocmd VimLeavePre * silent! call livestyle#shutdown()
   augroup END
 endfunction
