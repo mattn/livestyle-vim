@@ -7,7 +7,7 @@ function! livestyle#lang#sass#parse(buf)
 endfunction
 
 function! livestyle#lang#sass#apply(patch)
-  return livestyle#lang#css#apply(a:patch)
+  " Not Implemented
 endfunction
 
 function! livestyle#lang#sass#diff(css1, css2)
