@@ -14,8 +14,14 @@ else
   let s:use_python = 0
 endif
 
+function! s:sanitized_bufname(bufnr)
+  let bufnr = a:bufnr == '%' ? bufnr('%') : a:bufnr
+  let name = bufnr(a:bufnr)
+  return name == '' ? name : printf('NoName%03d', bufnr)
+endfunction
+
 function! s:files()
-  return map(filter(range(1, bufnr('$')), 'buflisted(v:val) && getbufvar(v:val, "&ft")=~"css\\|sass\\|scss"'), 'fnamemodify(bufname(v:val), ":p:gs?\\?/?")')
+  return map(filter(range(1, bufnr('$')), 'buflisted(v:val) && getbufvar(v:val, "&ft")=~"css\\|sass\\|scss"'), 'fnamemodify(s:sanitized_bufname(v:val), ":p:gs?\\?/?")')
 endfunction
 
 function! livestyle#updateFiles()
@@ -55,7 +61,7 @@ EOF
 endfunction
 
 function! livestyle#update()
-  let f = fnamemodify(bufname('%'), ':p:gs?\\?/?')
+  let f = fnamemodify(s:sanitized_bufname('%'), ':p:gs?\\?/?')
   if !livestyle#lang#exists(&ft)
     return
   endif
@@ -111,7 +117,7 @@ function! livestyle#reply(reply)
     let curwin = winnr()
     try
       for n in range(1, bufnr('$'))
-        if fnamemodify(bufname(n), ":p") == f
+        if fnamemodify(s:sanitized_bufname(n), ":p") == f
           exe bufwinnr(n).'wincmd w'
           let patch = res['data']['patch']
           call livestyle#lang#{&ft}#apply(patch)
@@ -131,7 +137,7 @@ function! livestyle#reply(reply)
 endfunction
 
 function! livestyle#clear()
-  let f = fnamemodify(bufname('%'), ':p:gs?\\?/?')
+  let f = fnamemodify(s:sanitized_bufname('%'), ':p:gs?\\?/?')
   if has_key(s:bufcache, f)
     call remove(s:bufcache, f)
   endif
