@@ -6,7 +6,7 @@ function! livestyle#lang#css#parse(buf)
   if len(buf) == 0
     let buf = join(getline(1, '$'), "\n") . "\n"
   endif
-  let csss = split(buf, '[^{]\+{\([a-zA-Z0-9-_.:]\+\|:\|"[^"]*"\|''[^'']*''\|;\+\|\_\s\+\|/\*\_.\{-}\*/\)*}\zs\ze')
+  let csss = split(buf, '[^{]\+{\([a-zA-Z0-9-_.%:]\+\|:\|"[^"]*"\|''[^'']*''\|;\+\|\_\s\+\|/\*\_.\{-}\*/\)*}\zs\ze')
   let ret = {}
   for css in csss
     let t = split(css[:-2], '{')
@@ -56,7 +56,7 @@ function! livestyle#lang#css#apply(patch)
       call setline(1, split(text, "\n"))
     elseif p['action'] == 'remove'
       let cx = '\\(\\_\\s*\\|/\\*\\_.\\{-}\\*/\\)'
-      let ix = '\([a-zA-Z0-9-_.:]\+\|:\|''[^'']\+''\|;\+\|\_\s\+\|/\*\_.\{-}\*/\)*'
+      let ix = '\([a-zA-Z0-9-_.%:]\+\|:\|''[^'']\+''\|;\+\|\_\s\+\|/\*\_.\{-}\*/\)*'
       let pathex = join(map(copy(p['path']), 'v:val[0]'), cx . ',' . cx)
       let ex = '^\(\_.*\%(^\|\n\|}\)\)'.pathex.cx.'{'.cx.ix.cx.'}\(\_.*\)'
       let text = substitute(join(getline(1, '$'), "\n"), ex, '\1\2', '')
