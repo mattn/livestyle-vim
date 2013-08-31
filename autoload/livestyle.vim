@@ -110,23 +110,28 @@ function! livestyle#reply(reply)
   try
     let pos = getpos('.')
     let res = webapi#json#decode(a:reply)
-    if type(res) != 4 || !has_key(res, 'action') || res['action'] != 'update'
+    if type(res) != 4 || !has_key(res, 'action')
       return ''
     endif
-    let f = res['data']['editorFile']
-    let curwin = winnr()
-    try
-      for n in range(1, bufnr('$'))
-        if s:sanitized_bufname(n) == f
-          exe bufwinnr(n).'wincmd w'
-          let patch = res['data']['patch']
-          call livestyle#lang#{&ft}#apply(patch)
-          break
-        endif
-      endfor
-    finally
-      exe curwin.'wincmd w'
-    endtry
+    if res['action'] != 'update'
+      let f = res['data']['editorFile']
+      let curwin = winnr()
+      try
+        for n in range(1, bufnr('$'))
+          if s:sanitized_bufname(n) == f
+            exe bufwinnr(n).'wincmd w'
+            let patch = res['data']['patch']
+            call livestyle#lang#{&ft}#apply(patch)
+            break
+          endif
+        endfor
+      finally
+        exe curwin.'wincmd w'
+      endtry
+    elseif res['action'] != 'handshake'
+      let supports = res['data']['supports']
+      " TODO: check the filetype
+    endif
   catch
     echohl Error | echomsg v:exception "\n" . v:throwpoint | echohl None
   finally
