@@ -20,12 +20,12 @@ func main() {
 			b, err := ioutil.ReadAll(r.Body)
 			r.Body.Close()
 			if err != nil {
-				fmt.Fprint(w, "NG")
+				fmt.Fprint(w, "NG\n")
 				return
 			}
 			c <- string(b)
 		}
-		fmt.Fprint(w, "OK")
+		fmt.Fprint(w, "OK\n")
 	})
 	http.HandleFunc("/shutdown", func (w http.ResponseWriter, r *http.Request) {
 		log.Println("shutdown")
@@ -67,7 +67,7 @@ func main() {
 			}
 		}
 	}))
-	err := http.ListenAndServe(":54000", nil)
+	err := http.ListenAndServe("127.0.0.1:54000", nil)
 	if err != nil {
 		log.Fatal(err)
 	}
