@@ -1,6 +1,6 @@
 # LiveStyle for Vim
 
-![](https://gist.github.com/mattn/6183553/raw/3f568d6273584bef13442bf1c55a8db31d0b8408/livestyle-vim.gif)
+![](http://i.imgur.com/azDAz5n.gif)
 
 ## Requirements
 
