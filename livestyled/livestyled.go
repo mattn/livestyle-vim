@@ -1,7 +1,6 @@
 package main
 
 import (
-	"golang.org/x/net/websocket"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
@@ -9,12 +8,14 @@ import (
 	"net/http"
 	"os"
 	"os/exec"
+
+	"golang.org/x/net/websocket"
 )
 
 func main() {
 	c := make(chan string, 256)
 	name, path := "", ""
-	http.HandleFunc("/", func (w http.ResponseWriter, r *http.Request) {
+	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "text/plain")
 		if r.Method == "POST" {
 			b, err := ioutil.ReadAll(r.Body)
@@ -27,11 +28,11 @@ func main() {
 		}
 		fmt.Fprint(w, "OK\n")
 	})
-	http.HandleFunc("/shutdown", func (w http.ResponseWriter, r *http.Request) {
+	http.HandleFunc("/shutdown", func(w http.ResponseWriter, r *http.Request) {
 		log.Println("shutdown")
 		os.Exit(0)
 	})
-	http.HandleFunc("/vim", func (w http.ResponseWriter, r *http.Request) {
+	http.HandleFunc("/vim", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "text/plain")
 		var v map[string]string
 		err := json.NewDecoder(r.Body).Decode(&v)
